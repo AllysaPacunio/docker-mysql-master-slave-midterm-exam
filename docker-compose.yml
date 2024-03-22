@@ -1,0 +1,71 @@
+version: '3'
+services:
+  mysql_master:
+    image: mariadb:10.3
+    env_file:
+      - ./master/mysql_master.env
+    container_name: "mysql_master"
+    restart: "no"
+    ports:
+      - 4406:3306
+    volumes:
+      - ./master/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./master/data:/var/lib/mysql
+      - ./db:/db
+    networks:
+      - overlay
+
+  mysql_slave_ally:
+    image: mariadb:10.3
+    env_file:
+      - ./slave/mysql_slave_ally.env
+    container_name: "mysql_slave_ally"
+    restart: "no"
+    ports:
+      - 5506:3306
+    depends_on:
+      - mysql_master
+    volumes:
+      - ./slave/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave/data:/var/lib/mysql
+      - ./db:/db
+    networks:
+      - overlay
+
+  mysql_slave_meibs:
+    image: mariadb:10.3
+    env_file:
+      - ./slave/mysql_slave_meibs.env
+    container_name: "mysql_slave_meibs"
+    restart: "no"
+    ports:
+      - 6606:3306
+    depends_on:
+      - mysql_master
+    volumes:
+      - ./slave/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave/data:/var/lib/mysql
+      - ./db:/db
+    networks:
+      - overlay
+    
+  mysql_slave_phia:
+    image: mariadb:10.3
+    env_file:
+      - ./slave/mysql_slave_phia.env
+    container_name: "mysql_slave_phia"
+    restart: "no"
+    ports:
+      - 7706:3306
+    depends_on:
+      - mysql_master
+    volumes:
+      - ./slave/conf/mysql.conf.cnf:/etc/mysql/conf.d/mysql.conf.cnf
+      - ./slave/data:/var/lib/mysql
+      - ./db:/db
+    networks:
+      - overlay
+
+networks:
+  overlay:
+
